@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Permiso para mostrar la ubicación del usuario (myLocationEnabled). -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="sample_app"
         android:name="${applicationName}"
@@ -30,6 +33,17 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!--
+          Google Maps Android API key.
+          Reemplaza el valor por tu clave real obtenida en:
+          https://console.cloud.google.com/google/maps-apis/credentials
+          Restringe la clave a tu package name (com.example.sample_app)
+          y al SHA-1 de tu certificado de firma.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIza_SY_REEMPLAZA_P_TU_API_KEY_ANDROID" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

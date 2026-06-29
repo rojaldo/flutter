@@ -54,6 +54,17 @@ import 'package:sample_app/ui/features/api_rest/views/api_pagination_example.dar
 import 'package:sample_app/ui/features/api_rest/views/api_search_example.dart';
 import 'package:sample_app/ui/features/api_rest/views/api_errors_example.dart';
 import 'package:sample_app/ui/features/api_rest/views/api_images_example.dart';
+import 'package:sample_app/ui/features/maps/views/basic_map_example.dart';
+import 'package:sample_app/ui/features/maps/views/camera_control_example.dart';
+import 'package:sample_app/ui/features/maps/views/circles_example.dart';
+import 'package:sample_app/ui/features/maps/views/info_window_example.dart';
+import 'package:sample_app/ui/features/maps/views/map_styling_example.dart';
+import 'package:sample_app/ui/features/maps/views/map_type_example.dart';
+import 'package:sample_app/ui/features/maps/views/map_ui_controls_example.dart';
+import 'package:sample_app/ui/features/maps/views/markers_example.dart';
+import 'package:sample_app/ui/features/maps/views/my_location_example.dart';
+import 'package:sample_app/ui/features/maps/views/polygons_example.dart';
+import 'package:sample_app/ui/features/maps/views/polylines_example.dart';
 
 void main() {
   runApp(const MyApp());
@@ -124,8 +135,20 @@ class MyApp extends StatelessWidget {
         '/api_pagination': (_) => const ApiPaginationExample(),
         '/api_search': (_) => const ApiSearchExample(),
         '/api_errors': (_) => const ApiErrorsExample(),
+        '/api_images': (_) => const ApiImagesExample(),
         '/exercise_calculator': (_) => const CalculatorExample(),
         '/exercise_apod': (_) => const ApodPage(),
+        '/map_basic': (_) => const BasicMapExample(),
+        '/map_type': (_) => const MapTypeExample(),
+        '/map_camera_control': (_) => const CameraControlExample(),
+        '/map_markers': (_) => const MarkersExample(),
+        '/map_info_window': (_) => const InfoWindowExample(),
+        '/map_polylines': (_) => const PolylinesExample(),
+        '/map_polygons': (_) => const PolygonsExample(),
+        '/map_circles': (_) => const CirclesExample(),
+        '/map_ui_controls': (_) => const MapUiControlsExample(),
+        '/map_my_location': (_) => const MyLocationExample(),
+        '/map_styling': (_) => const MapStylingExample(),
       },
     );
   }

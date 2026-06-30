@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:sample_app/model/apod_data.dart';
 
 class ApodPage extends StatefulWidget {
-  const ApodPage({super.key});
+  const ApodPage({super.key, this.client});
+
+  final http.Client? client;
 
   @override
   State<ApodPage> createState() => _ApodPageState();
@@ -18,17 +20,27 @@ class ApodPage extends StatefulWidget {
 class _ApodPageState extends State<ApodPage> {
 
   late Future<ApodData> _futureApodData;
+  DateTime? selectedDate;
 
-  Future<ApodData> fetchApodData() async {
+
+  // fetch data from nasa with opcional parameter date, if date is null, it will fetch the data for today
+  Future<ApodData> fetchApodData({DateTime? date}) async {
+    var formattedDate = '';
+    if (date != null) {
+      formattedDate = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    }
+    else {
+      formattedDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
+    }
     const apiKey = 'DEMO_KEY'; // Replace with your actual NASA API key
-    final url = Uri.parse('https://api.nasa.gov/planetary/apod?api_key=$apiKey&date=2026-6-22');
-    final response = await http.get(url);
+    final url = Uri.parse('https://api.nasa.gov/planetary/apod?api_key=$apiKey&date=$formattedDate');
+    final response = await (widget.client ?? http.Client()).get(url);
     if (response.statusCode == 200) {
       return ApodData.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load APOD data');
     }
-    
+
 
   }
 
@@ -42,6 +54,23 @@ class _ApodPageState extends State<ApodPage> {
 
   }
 
+  Future<void> _selectDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      // today's date get from system
+      initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      // june 15th 1995
+      firstDate: DateTime(1995, 6, 16),
+      lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+    );
+
+    setState(() {
+      selectedDate = pickedDate;
+      _futureApodData = fetchApodData(date: selectedDate);
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +78,7 @@ class _ApodPageState extends State<ApodPage> {
       body: FutureBuilder<ApodData>(
         future: _futureApodData,
         builder: (context, snapshot) {
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -59,7 +89,11 @@ class _ApodPageState extends State<ApodPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (apodData.imageUrl != null)
+                  OutlinedButton(
+                    onPressed: _selectDate,
+                    child: const Text('Select Date'),
+                  ),
+                  if (apodData.imageUrl != null && apodData.imageUrl!.isNotEmpty)
                     Image.network(apodData.imageUrl!),
                   Padding(
                     padding: const EdgeInsets.all(8.0),

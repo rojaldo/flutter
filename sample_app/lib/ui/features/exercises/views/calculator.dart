@@ -1,27 +1,9 @@
-// this is a flutter page that demonstrates a simple calculator with basic operations: addition, subtraction, multiplication, and division. It uses a stateful widget to manage the input and output of the calculator. 
 import 'package:flutter/material.dart';
-import 'package:sample_app/model/calculator_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sample_app/ui/features/exercises/view_models/calculator_cubit.dart';
 
-class CalculatorExample extends StatefulWidget {
+class CalculatorExample extends StatelessWidget {
   const CalculatorExample({super.key});
-
-  @override
-  State<CalculatorExample> createState() => _CalculatorExampleState();
-}
-
-class _CalculatorExampleState extends State<CalculatorExample> {
-  // Add your state variables and methods here
-
-  // create state for variable displayText that will hold the text to be displayed in the calculator display
-  String displayText = '';
-
-  Calculator calculator = Calculator();
-
-  String processInput(String input) {
-    // Implement the logic to process the input and update the display text
-    return calculator.processInput(input);
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,32 +14,36 @@ class _CalculatorExampleState extends State<CalculatorExample> {
       body: SafeArea(
         child: Column(
           children: [
-            // Display: se expande para empujar el teclado hacia abajo
             Expanded(
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 alignment: Alignment.bottomRight,
-                child: Text(
-                  displayText.isEmpty ? '0' : displayText,
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w300,
-                    color: colorScheme.onSurface,
-                  ),
-                  textAlign: TextAlign.end,
+                child: BlocBuilder<CalculatorCubit, CalculatorState>(
+                  builder: (context, state) {
+                    return Text(
+                      state.displayText.isEmpty ? '0' : state.displayText,
+                      key: const Key('calculator_display'),
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w300,
+                        color: colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.end,
+                    );
+                  },
                 ),
               ),
             ),
-            // Teclado 4×4 que llena el ancho
-            ..._buildRows(colorScheme),
+            ..._buildRows(colorScheme, context.read<CalculatorCubit>()),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildRows(ColorScheme colorScheme) {
+  List<Widget> _buildRows(ColorScheme colorScheme, CalculatorCubit cubit) {
     const rows = [
       ['7', '8', '9', '/'],
       ['4', '5', '6', '*'],
@@ -81,11 +67,7 @@ class _CalculatorExampleState extends State<CalculatorExample> {
                   borderRadius: BorderRadius.circular(8),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      setState(() {
-                          displayText = processInput(label);
-                      });
-                    },
+                    onTap: () => cubit.processInput(label),
                     child: Center(
                       child: Text(
                         label,

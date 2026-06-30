@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sample_app/ui/features/exercises/views/apod_page.dart';
 import 'package:sample_app/ui/features/exercises/views/calculator.dart';
+import 'package:sample_app/ui/features/exercises/view_models/calculator_cubit.dart';
+import 'package:sample_app/ui/features/exercises/views/location_page.dart';
+import 'package:sample_app/ui/features/exercises/views/star_wars_page.dart';
 import 'package:sample_app/ui/home_page.dart';
 import 'package:sample_app/ui/features/widget_concepts/views/stateless_vs_stateful_example.dart';
 import 'package:sample_app/ui/features/widget_concepts/views/widget_lifecycle_example.dart';
@@ -65,8 +70,18 @@ import 'package:sample_app/ui/features/maps/views/markers_example.dart';
 import 'package:sample_app/ui/features/maps/views/my_location_example.dart';
 import 'package:sample_app/ui/features/maps/views/polygons_example.dart';
 import 'package:sample_app/ui/features/maps/views/polylines_example.dart';
+import 'package:sample_app/ui/features/camera/views/camera_preview_page.dart';
+import 'package:sample_app/ui/features/camera/views/camera_capture_page.dart';
+import 'package:sample_app/ui/features/camera/views/camera_video_page.dart';
+import 'package:sample_app/ui/features/camera/views/camera_flash_zoom_page.dart';
+import 'package:sample_app/ui/features/camera/views/camera_timer_page.dart';
+import 'package:sample_app/ui/features/camera/views/yolo_classifier_page.dart';
 
-void main() {
+late final SharedPreferences _prefs;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  _prefs = await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 
@@ -136,8 +151,13 @@ class MyApp extends StatelessWidget {
         '/api_search': (_) => const ApiSearchExample(),
         '/api_errors': (_) => const ApiErrorsExample(),
         '/api_images': (_) => const ApiImagesExample(),
-        '/exercise_calculator': (_) => const CalculatorExample(),
+        '/exercise_calculator': (_) => BlocProvider(
+              create: (_) => CalculatorCubit(prefs: _prefs),
+              child: const CalculatorExample(),
+            ),
         '/exercise_apod': (_) => const ApodPage(),
+        '/exercise_star_wars': (_) => const StarWarsPage(),
+        '/exercise_location': (_) => const LocationPage(),
         '/map_basic': (_) => const BasicMapExample(),
         '/map_type': (_) => const MapTypeExample(),
         '/map_camera_control': (_) => const CameraControlExample(),
@@ -149,6 +169,12 @@ class MyApp extends StatelessWidget {
         '/map_ui_controls': (_) => const MapUiControlsExample(),
         '/map_my_location': (_) => const MyLocationExample(),
         '/map_styling': (_) => const MapStylingExample(),
+        '/camera_preview': (_) => const CameraPreviewPage(),
+        '/camera_capture': (_) => const CameraCapturePage(),
+        '/camera_video': (_) => const CameraVideoPage(),
+        '/camera_flash_zoom': (_) => const CameraFlashZoomPage(),
+        '/camera_timer': (_) => const CameraTimerPage(),
+        '/camera_yolo': (_) => const YoloClassifierPage(),
       },
     );
   }

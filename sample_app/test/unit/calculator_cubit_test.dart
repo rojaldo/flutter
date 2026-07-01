@@ -18,10 +18,13 @@ void main() {
 
     tearDown(() => cubit.close());
 
-    test('estado inicial tiene displayText vacío y step init', () {
+    test('estado inicial de la maquina de estados de la calculadora', () {
       expect(cubit.state.displayText, '');
       expect(cubit.state.step, CalculatorStep.init);
       expect(cubit.state.firstNumber, 0);
+      expect(cubit.state.secondNumber, 0);
+      expect(cubit.state.result, 0);
+      expect(cubit.state.operator, '');
     });
 
     test('processInput con número muestra el número', () {
@@ -73,7 +76,7 @@ void main() {
       expect(cubit.state.result, 0);
       expect(cubit.state.operator, '');
       expect(cubit.state.step, CalculatorStep.init);
-      expect(cubit.state.displayText, '0');
+      expect(cubit.state.displayText, '');
     });
 
     test('encadenamiento: 2+3=+10= usa resultado anterior', () {

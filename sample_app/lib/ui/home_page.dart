@@ -45,6 +45,14 @@ final Map<String, List<ExampleItem>> exampleCategories = {
       route: '/exercise_user_form',
       category: 'Ejercicios',
     ),
+    ExampleItem(
+      id: 97,
+      title: 'YOLO — Detección en imagen',
+      subtitle: 'FilePicker + TFLite on-device, bounding boxes sobre imagen estática',
+      icon: Icons.image_search,
+      route: '/exercise_yolo',
+      category: 'Ejercicios',
+    ),
   ],
   'Conceptos de Widget': [
     ExampleItem(

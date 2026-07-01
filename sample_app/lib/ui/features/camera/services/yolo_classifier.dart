@@ -54,22 +54,50 @@ class YoloClassifier {
   bool get isLoaded => _interpreter != null;
   List<String> get labels => _labels;
 
-  /// Carga el modelo desde assets/models/yolov8s.tflite.
-  /// Lanza si el archivo no existe o no es un TFLite válido.
-  Future<void> load() async {
+  /// Path del modelo cargado actualmente (o null si no hay ninguno).
+  String? get loadedAssetPath => _loadedAssetPath;
+  String? _loadedAssetPath;
+
+  /// Carga un modelo TFLite desde un asset path.
+  ///
+  /// [assetPath] debe apuntar a un `.tflite` dentro de `assets/models/`.
+  /// Si se omite, usa el default `assets/models/yolov8s.tflite`.
+  /// Si ya había un modelo cargado, lo cierra antes de cargar el nuevo.
+  /// Lanza [StateError] si el archivo no existe o no es un TFLite válido.
+  Future<void> load({String assetPath = 'assets/models/yolov8s.tflite'}) async {
+    if (_loadedAssetPath == assetPath && _interpreter != null) return;
+    final old = _interpreter;
+    _interpreter = null;
+    _loadedAssetPath = null;
     try {
-      final byteData = await rootBundle.load('assets/models/yolov8s.tflite');
+      final byteData = await rootBundle.load(assetPath);
       final bytes = byteData.buffer.asUint8List(
           byteData.offsetInBytes, byteData.lengthInBytes);
       _interpreter = Interpreter.fromBuffer(bytes);
+      _loadedAssetPath = assetPath;
       _labels = cocoLabels;
+      old?.close();
     } on PlatformException catch (e) {
+      old?.close();
       throw StateError(
-        'No se pudo cargar assets/models/yolov8s.tflite. '
-        'Copia el modelo en esa ruta (ver assets/models/README.md). '
+        'No se pudo cargar $assetPath. '
+        'Verifica que sea un archivo .tflite válido (ver assets/models/README.md). '
         'Detalle: ${e.message}',
       );
+    } catch (e) {
+      old?.close();
+      throw StateError('No se pudo cargar $assetPath. Detalle: $e');
     }
+  }
+
+  /// Recarga el mismo modelo (útil tras hot-reload si se reemplazó el asset).
+  Future<void> reload() async {
+    final path = _loadedAssetPath;
+    if (path == null) return;
+    _loadedAssetPath = null;
+    _interpreter?.close();
+    _interpreter = null;
+    await load(assetPath: path);
   }
 
   /// Ejecuta la inferencia sobre un frame RGB ya decodificado.

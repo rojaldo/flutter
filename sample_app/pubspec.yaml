@@ -49,10 +49,13 @@ dependencies:
   # Reproducir el video grabado dentro de la app.
   video_player: ^2.9.2
   # YOLOv8s (TFLite) — inferencia on-device.
-  tflite_flutter: ^0.11.0
+  tflite_flutter: ^0.12.1
   # Decodificar bytes del frame de la cámara a Image para preprocesar.
   image: ^4.3.0
   equatable: ^2.0.8
+  # Selector de archivos multiplataforma (galería/diálogo nativo).
+  # Soporte Linux (xdg-desktop-portal) y Windows (Win32) para el ejemplo YOLO.
+  file_picker: ^8.1.0
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +69,9 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # Mocks para los widget/behavior tests (mocktail: sin build_runner).
   mocktail: ^0.3.0
+  # Driver para integration tests (e2e en dispositivo real).
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
